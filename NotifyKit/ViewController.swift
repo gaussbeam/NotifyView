@@ -11,12 +11,7 @@ import UIKit
 class ViewController: UIViewController {
 
     @IBAction func showButtonTapped(_ sender: UIButton) {
-        let notifyView = NotifyView.notifyView()
-        notifyView.configure(title: "Hello")
-        notifyView.backgroundColor = .lightGray
-        self.view.addSubview(notifyView)
-        
-        notifyView.show(.animate(relatedAnimation: nil, completion: nil))
+        self.notify(title: "Hello")
     }
 }
 

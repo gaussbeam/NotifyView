@@ -8,6 +8,22 @@
 
 import UIKit
 
+public struct NotifyViewStyle {
+    var padding: UIEdgeInsets
+    
+    var backgroundColor: UIColor
+    var titleColor: UIColor
+    var titleFont: UIFont
+    
+    static var defaultStyle: NotifyViewStyle {
+        return NotifyViewStyle(
+            padding: UIEdgeInsets(top: 4.0, left: 12.0,  bottom: 4.0, right: 12.0),
+            backgroundColor: .lightGray,
+            titleColor: .black,
+            titleFont: .boldSystemFont(ofSize: 10.0))
+    }
+}
+
 public class NotifyView: UIView {
     
     // MARK: - IBOutlet
@@ -18,34 +34,12 @@ public class NotifyView: UIView {
     @IBOutlet private weak var rightPadding:  NSLayoutConstraint!
     
     // MARK: - Variables
-    var animateDurationType: AnimateDurationType = .medium
-    var displayDurationType: DisplayDurationType = .short
-    var padding: UIEdgeInsets = UIEdgeInsets(top: 4.0,
-                                             left: 12.0,
-                                             bottom: 4.0,
-                                             right: 12.0)
+    fileprivate var displayDurationType: DisplayDurationType!
+    fileprivate var showAnimateStyle: AnimateStyle = .none
+    fileprivate var hideAnimateStyle: AnimateStyle = .none
     
-    var titleColor: UIColor = .black
-    var titleFont: UIFont = .boldSystemFont(ofSize: 10.0)
-
     /// Constraint for animation
     fileprivate var topConstraint: NSLayoutConstraint!
-
-    func configure(title: String) {
-        self.isHidden = true
-
-        // TODO: Timing, Approach
-        self.titleLabel.font = self.titleFont
-        self.titleLabel.textColor = titleColor
-        self.topPadding.constant = self.padding.top
-        self.leftPadding.constant = self.padding.left
-        self.bottomPadding.constant = self.padding.bottom
-        self.rightPadding.constant = self.padding.right
-
-        self.titleLabel.text = title
-        self.titleLabel.sizeToFit()
-        self.setNeedsLayout()
-    }
 }
 
 // MARK: - Constants
@@ -87,7 +81,7 @@ public extension NotifyView {
                 
             case .long:
                 return 4.0
-            
+                
             case .custom(let interval):
                 return interval
                 
@@ -99,13 +93,33 @@ public extension NotifyView {
     
     enum AnimateStyle {
         case none
-        case animate(relatedAnimation:  ((CGFloat) -> Void)?, completion: (() -> Void)?)
+        case animate(durationType: AnimateDurationType,
+            relatedAnimation:  ((CGFloat) -> Void)?,
+            completion: (() -> Void)?)
     }
 }
 
 // MARK: - Layout
 
 private extension NotifyView {
+    func configure(title: String,
+                   style: NotifyViewStyle) {
+        self.isHidden = true
+        
+        self.topPadding.constant = style.padding.top
+        self.leftPadding.constant = style.padding.left
+        self.bottomPadding.constant = style.padding.bottom
+        self.rightPadding.constant = style.padding.right
+
+        self.backgroundColor = style.backgroundColor
+        
+        self.titleLabel.font = style.titleFont
+        self.titleLabel.textColor = style.titleColor
+        
+        self.titleLabel.text = title
+        self.titleLabel.sizeToFit()
+    }
+    
     func configureConstraints() {
         guard let superView = self.superview else { return }
         
@@ -113,66 +127,60 @@ private extension NotifyView {
         self.translatesAutoresizingMaskIntoConstraints = false
         self.leadingAnchor.constraint(equalTo: superView.leadingAnchor).isActive = true
         self.widthAnchor.constraint(equalTo: superView.widthAnchor).isActive = true
-
+        
         // 上端のconstraintは表示アニメーションに使用するため保持
         let topConstraint = self.topAnchor.constraint(equalTo: superView.topAnchor)
         self.topConstraint = topConstraint
     }
     
-    func prepareForHideIfNeeded(_ style: AnimateStyle) {
+    func prepareForHideIfNeeded() {
         guard let displayDuration = self.displayDurationType.duration else { return }
         
         DispatchQueue.main.asyncAfter(deadline: .now() + displayDuration) {
-            switch style {
-            case .none:
-                self.hide(.none)
-                
-            case .animate(_, _):
-                // TODO: refine interface passing handlers
-                self.hide(.animate(relatedAnimation: nil, completion: nil))
-            }
+            self.hide()
         }
     }
 }
 
 extension NotifyView {
-    func show(_ style: AnimateStyle) {
+    func show() {
         self.configureConstraints()
         
-        switch style {
+        switch self.showAnimateStyle {
         case .none:
             self.isHidden = false
-            prepareForHideIfNeeded(style)
-
-        case .animate(let related, let completion):
+            prepareForHideIfNeeded()
+            
+        case .animate(let durationType, let related, let completion):
             // アニメーションの初期状態(親ビューの上端より上に配置しておく)
             topConstraint.constant = -self.frame.height
             topConstraint.isActive = true
-
+            
             self.isHidden = false
             DispatchQueue.main.async {
                 // 親ビューの上端とビューの上端を揃える
                 self.topConstraint.constant = 0.0
                 
-                UIView.animate(withDuration: self.animateDurationType.duration,
+                UIView.animate(withDuration: durationType.duration,
                                animations: {
                                 related?(self.frame.height)
                                 self.superview?.layoutIfNeeded()
                 },
                                completion: { _ in
-                    completion?()
-                                self.prepareForHideIfNeeded(style)
+                                completion?()
+                                self.prepareForHideIfNeeded()
                 })
             }
         }
     }
     
-    func hide(_ style: AnimateStyle) {
-        switch style {
+    func hide() {
+        switch self.hideAnimateStyle {
         case .none:
             self.isHidden = true
-
-        case .animate(let related, let completion):
+            self.removeFromSuperview()
+            
+        case .animate(let durationType, let related, let completion):
             
             /// 親ビューの上端に向かって消えるようにアニメーションを行う
             DispatchQueue.main.async {
@@ -180,7 +188,7 @@ extension NotifyView {
                 self.topConstraint?.constant = -self.frame.height
                 
                 UIView.animate(
-                    withDuration: self.animateDurationType.duration,
+                    withDuration: durationType.duration,
                     animations: {
                         related?(self.frame.height)
                         self.superview?.layoutIfNeeded()
@@ -200,5 +208,28 @@ extension NotifyView {
         let views: Array = nib.instantiate(withOwner: self, options: nil)
         
         return views.first as! NotifyView
+    }
+}
+
+extension UIViewController {
+    func notify(title: String,
+                style: NotifyViewStyle = .defaultStyle,
+                displayDurationType: NotifyView.DisplayDurationType = .long,
+                showAnimateStyle: NotifyView.AnimateStyle = .animate(durationType: .medium, relatedAnimation: nil, completion: nil),
+                hideAnimateStyle: NotifyView.AnimateStyle = .animate(durationType: .medium, relatedAnimation: nil, completion: nil)) -> NotifyView {
+        
+        let notifyView = NotifyView.notifyView()
+        
+        notifyView.configure(title: title, style: style)
+        self.view.addSubview(notifyView)
+        self.view.setNeedsLayout()
+
+        notifyView.displayDurationType = displayDurationType
+        notifyView.showAnimateStyle = showAnimateStyle
+        notifyView.hideAnimateStyle = hideAnimateStyle
+        
+        notifyView.show()
+        
+        return notifyView
     }
 }
