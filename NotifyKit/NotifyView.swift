@@ -45,6 +45,11 @@ public class NotifyView: UIView {
 // MARK: - Constants
 
 public extension NotifyView {
+    enum TransitionStyle {
+        case wipe
+        case dissolve
+    }
+    
     enum AnimateDurationType {
         case fast
         case medium
@@ -93,7 +98,8 @@ public extension NotifyView {
     
     enum AnimateStyle {
         case none
-        case animate(durationType: AnimateDurationType,
+        case animate(transitionStyle: TransitionStyle,
+            durationType: AnimateDurationType,
             relatedAnimation:  ((CGFloat) -> Void)?,
             completion: (() -> Void)?)
     }
@@ -151,10 +157,16 @@ extension NotifyView {
             self.isHidden = false
             prepareForHideIfNeeded()
             
-        case .animate(let durationType, let related, let completion):
-            // アニメーションの初期状態(親ビューの上端より上に配置しておく)
-            topConstraint.constant = -self.frame.height
-            topConstraint.isActive = true
+        case .animate(let transitionStyle, let durationType, let related, let completion):
+            
+            // TODO:
+            if transitionStyle == .wipe {
+                // アニメーションの初期状態(親ビューの上端より上に配置しておく)
+                topConstraint.constant = -self.frame.height
+                topConstraint.isActive = true
+            } else {
+                self.alpha = 0.0
+            }
             
             self.isHidden = false
             DispatchQueue.main.async {
@@ -164,7 +176,13 @@ extension NotifyView {
                 UIView.animate(withDuration: durationType.duration,
                                animations: {
                                 related?(self.frame.height)
-                                self.superview?.layoutIfNeeded()
+                                
+                                // TODO:
+                                if transitionStyle == .wipe {
+                                    self.superview?.layoutIfNeeded()
+                                } else {
+                                    self.alpha = 1.0
+                                }
                 },
                                completion: { _ in
                                 completion?()
@@ -180,18 +198,29 @@ extension NotifyView {
             self.isHidden = true
             self.removeFromSuperview()
             
-        case .animate(let durationType, let related, let completion):
+        case .animate(let transitionStyle, let durationType, let related, let completion):
             
             /// 親ビューの上端に向かって消えるようにアニメーションを行う
             DispatchQueue.main.async {
-                // 親ビューの上端より上になるようアニメーションさせる
-                self.topConstraint?.constant = -self.frame.height
+                
+                if transitionStyle == .wipe {
+                    // 親ビューの上端より上になるようアニメーションさせる
+                    self.topConstraint?.constant = -self.frame.height
+                } else {
+                    self.alpha = 1.0
+                }
                 
                 UIView.animate(
                     withDuration: durationType.duration,
                     animations: {
                         related?(self.frame.height)
-                        self.superview?.layoutIfNeeded()
+                        
+                        // TODO:
+                        if transitionStyle == .wipe {
+                            self.superview?.layoutIfNeeded()
+                        } else {
+                            self.alpha = 0.0
+                        }
                 },
                     completion: { _ in
                         completion?()
@@ -215,8 +244,8 @@ extension UIViewController {
     func notify(title: String,
                 style: NotifyViewStyle = .defaultStyle,
                 displayDurationType: NotifyView.DisplayDurationType = .long,
-                showAnimateStyle: NotifyView.AnimateStyle = .animate(durationType: .medium, relatedAnimation: nil, completion: nil),
-                hideAnimateStyle: NotifyView.AnimateStyle = .animate(durationType: .medium, relatedAnimation: nil, completion: nil)) -> NotifyView {
+                showAnimateStyle: NotifyView.AnimateStyle = .animate(transitionStyle: .wipe, durationType: .medium, relatedAnimation: nil, completion: nil),
+                hideAnimateStyle: NotifyView.AnimateStyle = .animate(transitionStyle: .wipe, durationType: .medium, relatedAnimation: nil, completion: nil)) -> NotifyView {
         
         let notifyView = NotifyView.notifyView()
         
