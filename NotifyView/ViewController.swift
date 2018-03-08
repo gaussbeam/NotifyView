@@ -1,6 +1,6 @@
 //
 //  ViewController.swift
-//  NotifyKit
+//  NotifyView
 //
 //  Created by Hanyu Koji on 2018/03/02.
 //  Copyright © 2018年 gaussbeam. All rights reserved.

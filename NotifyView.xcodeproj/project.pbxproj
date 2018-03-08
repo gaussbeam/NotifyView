@@ -17,7 +17,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		7E5E8EE0204965A200081414 /* NotifyKit.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = NotifyKit.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		7E5E8EE0204965A200081414 /* NotifyView.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = NotifyView.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		7E5E8EE3204965A200081414 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		7E5E8EE5204965A200081414 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
 		7E5E8EE8204965A200081414 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
@@ -42,7 +42,7 @@
 		7E5E8ED7204965A200081414 = {
 			isa = PBXGroup;
 			children = (
-				7E5E8EE2204965A200081414 /* NotifyKit */,
+				7E5E8EE2204965A200081414 /* NotifyView */,
 				7E5E8EE1204965A200081414 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -50,12 +50,12 @@
 		7E5E8EE1204965A200081414 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				7E5E8EE0204965A200081414 /* NotifyKit.app */,
+				7E5E8EE0204965A200081414 /* NotifyView.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
 		};
-		7E5E8EE2204965A200081414 /* NotifyKit */ = {
+		7E5E8EE2204965A200081414 /* NotifyView */ = {
 			isa = PBXGroup;
 			children = (
 				7E5E8EE3204965A200081414 /* AppDelegate.swift */,
@@ -67,15 +67,15 @@
 				7E5E8EF72049671800081414 /* NotifyView.swift */,
 				7E5E8EF92049672300081414 /* NotifyView.xib */,
 			);
-			path = NotifyKit;
+			path = NotifyView;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		7E5E8EDF204965A200081414 /* NotifyKit */ = {
+		7E5E8EDF204965A200081414 /* NotifyView */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 7E5E8EF2204965A200081414 /* Build configuration list for PBXNativeTarget "NotifyKit" */;
+			buildConfigurationList = 7E5E8EF2204965A200081414 /* Build configuration list for PBXNativeTarget "NotifyView" */;
 			buildPhases = (
 				7E5E8EDC204965A200081414 /* Sources */,
 				7E5E8EDD204965A200081414 /* Frameworks */,
@@ -85,9 +85,9 @@
 			);
 			dependencies = (
 			);
-			name = NotifyKit;
-			productName = NotifyKit;
-			productReference = 7E5E8EE0204965A200081414 /* NotifyKit.app */;
+			name = NotifyView;
+			productName = NotifyView;
+			productReference = 7E5E8EE0204965A200081414 /* NotifyView.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -106,7 +106,7 @@
 					};
 				};
 			};
-			buildConfigurationList = 7E5E8EDB204965A200081414 /* Build configuration list for PBXProject "NotifyKit" */;
+			buildConfigurationList = 7E5E8EDB204965A200081414 /* Build configuration list for PBXProject "NotifyView" */;
 			compatibilityVersion = "Xcode 8.0";
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
@@ -119,7 +119,7 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				7E5E8EDF204965A200081414 /* NotifyKit */,
+				7E5E8EDF204965A200081414 /* NotifyView */,
 			);
 		};
 /* End PBXProject section */
@@ -283,9 +283,9 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
-				INFOPLIST_FILE = NotifyKit/Info.plist;
+				INFOPLIST_FILE = NotifyView/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = org.gaussbeam.NotifyKit;
+				PRODUCT_BUNDLE_IDENTIFIER = org.gaussbeam.NotifyView;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 4.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -297,9 +297,9 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
-				INFOPLIST_FILE = NotifyKit/Info.plist;
+				INFOPLIST_FILE = NotifyView/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = org.gaussbeam.NotifyKit;
+				PRODUCT_BUNDLE_IDENTIFIER = org.gaussbeam.NotifyView;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 4.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -309,7 +309,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		7E5E8EDB204965A200081414 /* Build configuration list for PBXProject "NotifyKit" */ = {
+		7E5E8EDB204965A200081414 /* Build configuration list for PBXProject "NotifyView" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				7E5E8EF0204965A200081414 /* Debug */,
@@ -318,7 +318,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		7E5E8EF2204965A200081414 /* Build configuration list for PBXNativeTarget "NotifyKit" */ = {
+		7E5E8EF2204965A200081414 /* Build configuration list for PBXNativeTarget "NotifyView" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				7E5E8EF3204965A200081414 /* Debug */,
