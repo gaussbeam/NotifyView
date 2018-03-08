@@ -37,9 +37,9 @@ public class NotifyView: UIView {
     fileprivate var displayDurationType: DisplayDurationType!
     fileprivate var showAnimateStyle: AnimateStyle = .none
     fileprivate var hideAnimateStyle: AnimateStyle = .none
+    fileprivate var position: Position = .topEdge
     
-    /// Constraint for animation
-    fileprivate var topConstraint: NSLayoutConstraint!
+    fileprivate var constraintForAnimate: NSLayoutConstraint!
 }
 
 // MARK: - Constants
@@ -48,6 +48,11 @@ public extension NotifyView {
     enum TransitionStyle {
         case wipe
         case dissolve
+    }
+    
+    enum Position {
+        case topEdge
+        case bottomEdge
     }
     
     enum AnimateDurationType {
@@ -133,10 +138,18 @@ private extension NotifyView {
         self.translatesAutoresizingMaskIntoConstraints = false
         self.leadingAnchor.constraint(equalTo: superView.leadingAnchor).isActive = true
         self.widthAnchor.constraint(equalTo: superView.widthAnchor).isActive = true
-        
-        // 上端のconstraintは表示アニメーションに使用するため保持
-        let topConstraint = self.topAnchor.constraint(equalTo: superView.topAnchor)
-        self.topConstraint = topConstraint
+
+        switch self.position {
+        case .topEdge:
+            // Store constraint as property to animate
+            let topConstraint = self.topAnchor.constraint(equalTo: superView.topAnchor)
+            self.constraintForAnimate = topConstraint
+            
+        case .bottomEdge:
+            // Store constraint as property to animate
+            let bottomConstraint = self.bottomAnchor.constraint(equalTo: superView.bottomAnchor)
+            self.constraintForAnimate = bottomConstraint
+        }
     }
     
     func prepareForHideIfNeeded() {
@@ -159,25 +172,27 @@ extension NotifyView {
             
         case .animate(let transitionStyle, let durationType, let related, let completion):
             
-            // TODO:
             if transitionStyle == .wipe {
-                // アニメーションの初期状態(親ビューの上端より上に配置しておく)
-                topConstraint.constant = -self.frame.height
-                topConstraint.isActive = true
+                switch self.position {
+                case .topEdge:
+                    constraintForAnimate.constant = -self.frame.height
+                    
+                case .bottomEdge:
+                    constraintForAnimate.constant = self.frame.height
+                }
+                constraintForAnimate.isActive = true
             } else {
                 self.alpha = 0.0
             }
             
             self.isHidden = false
             DispatchQueue.main.async {
-                // 親ビューの上端とビューの上端を揃える
-                self.topConstraint.constant = 0.0
+                self.constraintForAnimate.constant = 0.0
                 
                 UIView.animate(withDuration: durationType.duration,
                                animations: {
                                 related?(self.frame.height)
                                 
-                                // TODO:
                                 if transitionStyle == .wipe {
                                     self.superview?.layoutIfNeeded()
                                 } else {
@@ -200,12 +215,17 @@ extension NotifyView {
             
         case .animate(let transitionStyle, let durationType, let related, let completion):
             
-            /// 親ビューの上端に向かって消えるようにアニメーションを行う
+            /// Animate toward top or bottom edge of superview
             DispatchQueue.main.async {
                 
                 if transitionStyle == .wipe {
-                    // 親ビューの上端より上になるようアニメーションさせる
-                    self.topConstraint?.constant = -self.frame.height
+                    switch self.position {
+                    case .topEdge:
+                        self.constraintForAnimate?.constant = -self.frame.height
+                        
+                    case .bottomEdge:
+                        self.constraintForAnimate.constant = self.frame.height
+                    }
                 } else {
                     self.alpha = 1.0
                 }
@@ -215,7 +235,6 @@ extension NotifyView {
                     animations: {
                         related?(self.frame.height)
                         
-                        // TODO:
                         if transitionStyle == .wipe {
                             self.superview?.layoutIfNeeded()
                         } else {
@@ -243,6 +262,7 @@ extension NotifyView {
 extension UIViewController {
     func notify(title: String,
                 style: NotifyViewStyle = .defaultStyle,
+                position: NotifyView.Position = .topEdge,
                 displayDurationType: NotifyView.DisplayDurationType = .long,
                 showAnimateStyle: NotifyView.AnimateStyle = .animate(transitionStyle: .wipe, durationType: .medium, relatedAnimation: nil, completion: nil),
                 hideAnimateStyle: NotifyView.AnimateStyle = .animate(transitionStyle: .wipe, durationType: .medium, relatedAnimation: nil, completion: nil)) -> NotifyView {
@@ -256,6 +276,7 @@ extension UIViewController {
         notifyView.displayDurationType = displayDurationType
         notifyView.showAnimateStyle = showAnimateStyle
         notifyView.hideAnimateStyle = hideAnimateStyle
+        notifyView.position = position
         
         notifyView.show()
         
