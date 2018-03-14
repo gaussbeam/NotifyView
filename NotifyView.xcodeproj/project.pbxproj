@@ -39,6 +39,19 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		7E46E70420594218004F0E71 /* Example */ = {
+			isa = PBXGroup;
+			children = (
+				7E5E8EE3204965A200081414 /* AppDelegate.swift */,
+				7E5E8EE5204965A200081414 /* ViewController.swift */,
+				7E5E8EE7204965A200081414 /* Main.storyboard */,
+				7E5E8EEA204965A200081414 /* Assets.xcassets */,
+				7E5E8EEC204965A200081414 /* LaunchScreen.storyboard */,
+				7E5E8EEF204965A200081414 /* Info.plist */,
+			);
+			path = Example;
+			sourceTree = "<group>";
+		};
 		7E5E8ED7204965A200081414 = {
 			isa = PBXGroup;
 			children = (
@@ -58,12 +71,7 @@
 		7E5E8EE2204965A200081414 /* NotifyView */ = {
 			isa = PBXGroup;
 			children = (
-				7E5E8EE3204965A200081414 /* AppDelegate.swift */,
-				7E5E8EE5204965A200081414 /* ViewController.swift */,
-				7E5E8EE7204965A200081414 /* Main.storyboard */,
-				7E5E8EEA204965A200081414 /* Assets.xcassets */,
-				7E5E8EEC204965A200081414 /* LaunchScreen.storyboard */,
-				7E5E8EEF204965A200081414 /* Info.plist */,
+				7E46E70420594218004F0E71 /* Example */,
 				7E5E8EF72049671800081414 /* NotifyView.swift */,
 				7E5E8EF92049672300081414 /* NotifyView.xib */,
 			);
@@ -283,7 +291,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
-				INFOPLIST_FILE = NotifyView/Info.plist;
+				INFOPLIST_FILE = "$(SRCROOT)/NotifyView/Example/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = org.gaussbeam.NotifyView;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -297,7 +305,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
-				INFOPLIST_FILE = NotifyView/Info.plist;
+				INFOPLIST_FILE = "$(SRCROOT)/NotifyView/Example/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = org.gaussbeam.NotifyView;
 				PRODUCT_NAME = "$(TARGET_NAME)";
